@@ -1,0 +1,795 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FIMS - Financial Institutions' Management System</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --primary: #1a3b5d;
+            --secondary: #2c5aa0;
+            --accent: #4caf50;
+            --danger: #f44336;
+            --warning: #ff9800;
+            --light: #f8f9fa;
+            --dark: #343a40;
+            --gray: #6c757d;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* Header Styles */
+        header {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 1rem 0;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .logo h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+        
+        .logo span {
+            font-weight: 300;
+            font-size: 1rem;
+            opacity: 0.9;
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+        
+        nav a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: opacity 0.3s;
+            padding: 5px 10px;
+            border-radius: 4px;
+        }
+        
+        nav a:hover, nav a.active {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+        
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(rgba(26, 59, 93, 0.9), rgba(26, 59, 93, 0.8)), url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect width="100" height="100" fill="%231a3b5d"/><path d="M0 0L100 100M100 0L0 100" stroke="%232c5aa0" stroke-width="1"/></svg>');
+            color: white;
+            padding: 4rem 0;
+            text-align: center;
+        }
+        
+        .hero h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+        
+        .hero p {
+            font-size: 1.2rem;
+            max-width: 800px;
+            margin: 0 auto 2rem;
+            opacity: 0.9;
+        }
+        
+        .btn {
+            display: inline-block;
+            background-color: var(--accent);
+            color: white;
+            padding: 12px 30px;
+            border-radius: 4px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+            border: none;
+            cursor: pointer;
+        }
+        
+        .btn:hover {
+            background-color: #3d8c40;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        
+        .btn-outline {
+            background-color: transparent;
+            border: 2px solid white;
+        }
+        
+        .btn-outline:hover {
+            background-color: white;
+            color: var(--primary);
+        }
+        
+        /* Dashboard Section */
+        .dashboard {
+            padding: 3rem 0;
+        }
+        
+        .section-title {
+            text-align: center;
+            margin-bottom: 2rem;
+            color: var(--primary);
+        }
+        
+        .section-title h2 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .section-title p {
+            color: var(--gray);
+            max-width: 700px;
+            margin: 0 auto;
+        }
+        
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .metric-card {
+            background: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .metric-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+        }
+        
+        .metric-card h3 {
+            font-size: 1rem;
+            color: var(--gray);
+            margin-bottom: 0.5rem;
+        }
+        
+        .metric-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+        
+        .metric-change {
+            display: flex;
+            align-items: center;
+            margin-top: 0.5rem;
+            font-size: 0.9rem;
+        }
+        
+        .positive {
+            color: var(--accent);
+        }
+        
+        .negative {
+            color: var(--danger);
+        }
+        
+        /* Charts Section */
+        .charts-section {
+            padding: 2rem 0;
+        }
+        
+        .charts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .chart-card {
+            background: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+        
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .chart-header h3 {
+            color: var(--primary);
+            font-size: 1.2rem;
+        }
+        
+        .chart-container {
+            position: relative;
+            height: 300px;
+            width: 100%;
+        }
+        
+        /* Features Section */
+        .features {
+            padding: 3rem 0;
+            background-color: #f0f4f8;
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+        
+        .feature-card {
+            background: white;
+            border-radius: 8px;
+            padding: 2rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .feature-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1rem;
+            color: white;
+            font-size: 1.5rem;
+        }
+        
+        .feature-card h3 {
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+        
+        .feature-card p {
+            color: var(--gray);
+            margin-bottom: 1.5rem;
+        }
+        
+        /* Tabs Section */
+        .tabs-section {
+            padding: 3rem 0;
+        }
+        
+        .tabs {
+            display: flex;
+            border-bottom: 1px solid #ddd;
+            margin-bottom: 2rem;
+            overflow-x: auto;
+        }
+        
+        .tab {
+            padding: 1rem 1.5rem;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-weight: 500;
+            color: var(--gray);
+            transition: all 0.3s;
+            white-space: nowrap;
+        }
+        
+        .tab.active {
+            color: var(--primary);
+            border-bottom: 3px solid var(--primary);
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        /* Footer */
+        footer {
+            background-color: var(--dark);
+            color: white;
+            padding: 3rem 0 1.5rem;
+        }
+        
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .footer-section h3 {
+            margin-bottom: 1.5rem;
+            font-size: 1.2rem;
+        }
+        
+        .footer-section ul {
+            list-style: none;
+        }
+        
+        .footer-section ul li {
+            margin-bottom: 0.8rem;
+        }
+        
+        .footer-section a {
+            color: #ddd;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        .footer-section a:hover {
+            color: white;
+        }
+        
+        .copyright {
+            text-align: center;
+            padding-top: 1.5rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: #aaa;
+            font-size: 0.9rem;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            nav ul {
+                gap: 1rem;
+            }
+            
+            .hero h2 {
+                font-size: 2rem;
+            }
+            
+            .charts-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <h1>FIMS <span>Financial Institutions' Management System</span></h1>
+                </div>
+                <nav>
+                    <ul>
+                        <li><a href="#" class="active">Home</a></li>
+                        <li><a href="#features">Features</a></li>
+                        <li><a href="#dashboard">Dashboard</a></li>
+                        <li><a href="#analytics">Analytics</a></li>
+                        <li><a href="#contact">Contact</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <h2>Enterprise • Secure • AI-driven</h2>
+            <p>Manage, Detect and Predict — All in One Platform. Centralized database management combined with AI to provide secure company stock, audit and trade handling, continuous price monitoring, fraud detection and stock price prediction.</p>
+            <div class="hero-buttons">
+                <a href="#features" class="btn">Explore Features</a>
+                <a href="#dashboard" class="btn btn-outline">View Dashboard</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Dashboard Metrics -->
+    <section class="dashboard" id="dashboard">
+        <div class="container">
+            <div class="section-title">
+                <h2>Financial Dashboard</h2>
+                <p>Real-time overview of your financial operations and key performance indicators</p>
+            </div>
+            
+            <div class="dashboard-grid">
+                <div class="metric-card">
+                    <h3>Portfolio Value</h3>
+                    <div class="metric-value">$4,827,350</div>
+                    <div class="metric-change positive">↑ 2.3% this week</div>
+                </div>
+                
+                <div class="metric-card">
+                    <h3>Active Stocks</h3>
+                    <div class="metric-value">42</div>
+                    <div class="metric-change positive">↑ 3 new this month</div>
+                </div>
+                
+                <div class="metric-card">
+                    <h3>Pending Trades</h3>
+                    <div class="metric-value">17</div>
+                    <div class="metric-change negative">↑ 2 requires attention</div>
+                </div>
+                
+                <div class="metric-card">
+                    <h3>Fraud Alerts</h3>
+                    <div class="metric-value">3</div>
+                    <div class="metric-change negative">↑ 1 new today</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Charts Section -->
+    <section class="charts-section" id="analytics">
+        <div class="container">
+            <div class="section-title">
+                <h2>Financial Analytics</h2>
+                <p>Interactive charts and visualizations for data-driven decision making</p>
+            </div>
+            
+            <div class="charts-grid">
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3>Portfolio Performance</h3>
+                        <select id="portfolioRange">
+                            <option value="7d">7 Days</option>
+                            <option value="1m">1 Month</option>
+                            <option value="3m">3 Months</option>
+                            <option value="1y">1 Year</option>
+                        </select>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="portfolioChart"></canvas>
+                    </div>
+                </div>
+                
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3>Stock Price Prediction</h3>
+                        <select id="predictionStock">
+                            <option value="AAPL">Apple (AAPL)</option>
+                            <option value="GOOGL">Google (GOOGL)</option>
+                            <option value="MSFT">Microsoft (MSFT)</option>
+                        </select>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="predictionChart"></canvas>
+                    </div>
+                </div>
+                
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3>Fraud Detection Analysis</h3>
+                        <select id="fraudRange">
+                            <option value="7d">7 Days</option>
+                            <option value="1m">1 Month</option>
+                            <option value="3m">3 Months</option>
+                        </select>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="fraudChart"></canvas>
+                    </div>
+                </div>
+                
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3>Price Monitoring</h3>
+                        <select id="priceStock">
+                            <option value="AAPL">Apple (AAPL)</option>
+                            <option value="GOOGL">Google (GOOGL)</option>
+                            <option value="MSFT">Microsoft (MSFT)</option>
+                        </select>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="priceChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features" id="features">
+        <div class="container">
+            <div class="section-title">
+                <h2>Key Features</h2>
+                <p>Comprehensive financial management tools powered by AI and advanced databases</p>
+            </div>
+            
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">📊</div>
+                    <h3>Company Stock Management</h3>
+                    <p>Relational DB for stocks, investors and transactions with audit logs and normalized schema for data integrity.</p>
+                    <a href="#" class="btn">Explore</a>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">🔍</div>
+                    <h3>AI-Based Fraud Detection</h3>
+                    <p>ML models analyze transaction patterns to flag anomalies and suspicious activity for review.</p>
+                    <a href="#" class="btn">Explore</a>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">📑</div>
+                    <h3>Audit Report Management</h3>
+                    <p>Secure cataloging, version control, access privileges and SQL-triggered archiving to ensure compliance.</p>
+                    <a href="#" class="btn">Explore</a>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">📈</div>
+                    <h3>Price Monitoring</h3>
+                    <p>Time-series monitoring and sentiment analysis to detect volatility and unusual market movement.</p>
+                    <a href="#" class="btn">Explore</a>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">💱</div>
+                    <h3>Trade Management</h3>
+                    <p>ACID-compliant trade recording, stored procedures for validation and real-time reporting views.</p>
+                    <a href="#" class="btn">Explore</a>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">🔮</div>
+                    <h3>Stock Price Prediction</h3>
+                    <p>Database-driven pipelines feeding predictive models (regression, random forest, LSTM) for forecasts.</p>
+                    <a href="#" class="btn">Explore</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer id="contact">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>FIMS</h3>
+                    <p>Financial Institutions' Management System providing enterprise-grade financial data management with AI-powered analytics.</p>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href="#">Home</a></li>
+                        <li><a href="#features">Features</a></li>
+                        <li><a href="#dashboard">Dashboard</a></li>
+                        <li><a href="#analytics">Analytics</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>Contact Us</h3>
+                    <ul>
+                        <li>Email: info@fims.com</li>
+                        <li>Phone: +1 (555) 123-4567</li>
+                        <li>Address: 123 Financial District, New York, NY</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="copyright">
+                <p>&copy; 2023 FIMS - Financial Institutions' Management System. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Initialize charts when the page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            // Portfolio Performance Chart
+            const portfolioCtx = document.getElementById('portfolioChart').getContext('2d');
+            const portfolioChart = new Chart(portfolioCtx, {
+                type: 'line',
+                data: {
+                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul'],
+                    datasets: [{
+                        label: 'Portfolio Value ($)',
+                        data: [4200000, 4350000, 4450000, 4600000, 4700000, 4750000, 4827350],
+                        borderColor: '#4caf50',
+                        backgroundColor: 'rgba(76, 175, 80, 0.1)',
+                        borderWidth: 2,
+                        fill: true,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: true,
+                            position: 'top'
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: false,
+                            ticks: {
+                                callback: function(value) {
+                                    return '$' + (value / 1000000).toFixed(1) + 'M';
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+            
+            // Stock Price Prediction Chart
+            const predictionCtx = document.getElementById('predictionChart').getContext('2d');
+            const predictionChart = new Chart(predictionCtx, {
+                type: 'line',
+                data: {
+                    labels: ['Day 1', 'Day 2', 'Day 3', 'Day 4', 'Day 5', 'Day 6', 'Day 7', 'Day 8', 'Day 9', 'Day 10', 'Day 11', 'Day 12', 'Day 13', 'Day 14'],
+                    datasets: [
+                        {
+                            label: 'Historical Price',
+                            data: [175, 178, 177, 179, 182, 185, 183, 181, 184, 186, 188, 185, 187, 189],
+                            borderColor: '#1a3b5d',
+                            borderWidth: 2,
+                            tension: 0.4,
+                            pointRadius: 3
+                        },
+                        {
+                            label: 'Predicted Price',
+                            data: [null, null, null, null, null, null, null, null, null, null, 188, 190, 192, 195],
+                            borderColor: '#4caf50',
+                            borderWidth: 2,
+                            borderDash: [5, 5],
+                            tension: 0.4,
+                            pointRadius: 3
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: true,
+                            position: 'top'
+                        }
+                    }
+                }
+            });
+            
+            // Fraud Detection Chart
+            const fraudCtx = document.getElementById('fraudChart').getContext('2d');
+            const fraudChart = new Chart(fraudCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul'],
+                    datasets: [
+                        {
+                            label: 'Normal Transactions',
+                            data: [12500, 13200, 11800, 14500, 13900, 15200, 14800],
+                            backgroundColor: '#4caf50'
+                        },
+                        {
+                            label: 'Flagged Transactions',
+                            data: [120, 95, 150, 110, 180, 135, 165],
+                            backgroundColor: '#f44336'
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: true,
+                            position: 'top'
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Number of Transactions'
+                            }
+                        }
+                    }
+                }
+            });
+            
+            // Price Monitoring Chart
+            const priceCtx = document.getElementById('priceChart').getContext('2d');
+            const priceChart = new Chart(priceCtx, {
+                type: 'line',
+                data: {
+                    labels: ['9:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00'],
+                    datasets: [{
+                        label: 'Stock Price ($)',
+                        data: [182.5, 183.2, 184.0, 183.5, 182.8, 183.9, 184.5, 185.2],
+                        borderColor: '#2c5aa0',
+                        backgroundColor: 'rgba(44, 90, 160, 0.1)',
+                        borderWidth: 2,
+                        fill: true,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: true,
+                            position: 'top'
+                        }
+                    }
+                }
+            });
+            
+            // Update charts when dropdowns change
+            document.getElementById('portfolioRange').addEventListener('change', function() {
+                // In a real app, you would fetch new data based on the selected range
+                portfolioChart.update();
+            });
+            
+            document.getElementById('predictionStock').addEventListener('change', function() {
+                // In a real app, you would fetch new data based on the selected stock
+                predictionChart.update();
+            });
+            
+            document.getElementById('fraudRange').addEventListener('change', function() {
+                // In a real app, you would fetch new data based on the selected range
+                fraudChart.update();
+            });
+            
+            document.getElementById('priceStock').addEventListener('change', function() {
+                // In a real app, you would fetch new data based on the selected stock
+                priceChart.update();
+            });
+        });
+    </script>
+</body>
+</html>
