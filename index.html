@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FIMS - Financial Institutions' Management System</title>
+    <title>FIMS - Financial Institutions' Management System (Enhanced)</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         :root {
@@ -159,8 +159,9 @@
         }
         
         .dashboard-grid {
+            /* Adjusted minmax to comfortably fit 3 items per row on larger screens */
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); 
             gap: 1.5rem;
             margin-bottom: 2rem;
         }
@@ -204,6 +205,10 @@
         .negative {
             color: var(--danger);
         }
+
+        .warning {
+            color: var(--warning);
+        }
         
         /* Charts Section */
         .charts-section {
@@ -212,7 +217,7 @@
         
         .charts-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 1.5rem;
             margin-bottom: 2rem;
         }
@@ -289,7 +294,7 @@
             margin-bottom: 1.5rem;
         }
         
-        /* Tabs Section */
+        /* Tabs Section (Kept for consistency, although not edited) */
         .tabs-section {
             padding: 3rem 0;
         }
@@ -385,18 +390,13 @@
                 font-size: 2rem;
             }
             
-            .charts-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .dashboard-grid {
+            .charts-grid, .dashboard-grid {
                 grid-template-columns: 1fr;
             }
         }
     </style>
 </head>
 <body>
-    <!-- Header -->
     <header>
         <div class="container">
             <div class="header-content">
@@ -416,7 +416,6 @@
         </div>
     </header>
 
-    <!-- Hero Section -->
     <section class="hero">
         <div class="container">
             <h2>Enterprise • Secure • AI-driven</h2>
@@ -428,7 +427,6 @@
         </div>
     </section>
 
-    <!-- Dashboard Metrics -->
     <section class="dashboard" id="dashboard">
         <div class="container">
             <div class="section-title">
@@ -456,15 +454,26 @@
                 </div>
                 
                 <div class="metric-card">
-                    <h3>Fraud Alerts</h3>
+                    <h3>Fraud Alerts (AI-Driven)</h3>
                     <div class="metric-value">3</div>
                     <div class="metric-change negative">↑ 1 new today</div>
+                </div>
+
+                <div class="metric-card">
+                    <h3>Compliance Status</h3>
+                    <div class="metric-value positive">PASS</div>
+                    <div class="metric-change positive">Last Audit: 3 days ago</div>
+                </div>
+
+                <div class="metric-card">
+                    <h3>Daily Trade Volume</h3>
+                    <div class="metric-value">12,450</div>
+                    <div class="metric-change positive">↑ 8.1% from average</div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Charts Section -->
     <section class="charts-section" id="analytics">
         <div class="container">
             <div class="section-title">
@@ -473,6 +482,20 @@
             </div>
             
             <div class="charts-grid">
+                 <div class="chart-card">
+                    <div class="chart-header">
+                        <h3>Trade Distribution (Asset Type)</h3>
+                        <select id="tradeAssetRange">
+                            <option value="today">Today</option>
+                            <option value="7d">7 Days</option>
+                            <option value="1m">1 Month</option>
+                        </select>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="tradeDistributionChart"></canvas>
+                    </div>
+                </div>
+                
                 <div class="chart-card">
                     <div class="chart-header">
                         <h3>Portfolio Performance</h3>
@@ -490,7 +513,7 @@
                 
                 <div class="chart-card">
                     <div class="chart-header">
-                        <h3>Stock Price Prediction</h3>
+                        <h3>Stock Price Prediction (Feature 6)</h3>
                         <select id="predictionStock">
                             <option value="AAPL">Apple (AAPL)</option>
                             <option value="GOOGL">Google (GOOGL)</option>
@@ -504,7 +527,7 @@
                 
                 <div class="chart-card">
                     <div class="chart-header">
-                        <h3>Fraud Detection Analysis</h3>
+                        <h3>Fraud Detection Analysis (Feature 4)</h3>
                         <select id="fraudRange">
                             <option value="7d">7 Days</option>
                             <option value="1m">1 Month</option>
@@ -518,7 +541,7 @@
                 
                 <div class="chart-card">
                     <div class="chart-header">
-                        <h3>Price Monitoring</h3>
+                        <h3>Price Monitoring (Feature 5)</h3>
                         <select id="priceStock">
                             <option value="AAPL">Apple (AAPL)</option>
                             <option value="GOOGL">Google (GOOGL)</option>
@@ -533,7 +556,6 @@
         </div>
     </section>
 
-    <!-- Features Section -->
     <section class="features" id="features">
         <div class="container">
             <div class="section-title">
@@ -546,48 +568,47 @@
                     <div class="feature-icon">📊</div>
                     <h3>Company Stock Management</h3>
                     <p>Relational DB for stocks, investors and transactions with audit logs and normalized schema for data integrity.</p>
-                    <a href="#" class="btn">Explore</a>
+                    <a href="#module-stock" class="btn">Explore</a>
                 </div>
                 
                 <div class="feature-card">
                     <div class="feature-icon">🔍</div>
                     <h3>AI-Based Fraud Detection</h3>
                     <p>ML models analyze transaction patterns to flag anomalies and suspicious activity for review.</p>
-                    <a href="#" class="btn">Explore</a>
+                    <a href="#module-fraud" class="btn">Explore</a>
                 </div>
                 
                 <div class="feature-card">
                     <div class="feature-icon">📑</div>
                     <h3>Audit Report Management</h3>
                     <p>Secure cataloging, version control, access privileges and SQL-triggered archiving to ensure compliance.</p>
-                    <a href="#" class="btn">Explore</a>
+                    <a href="#module-audit" class="btn">Explore</a>
                 </div>
                 
                 <div class="feature-card">
                     <div class="feature-icon">📈</div>
                     <h3>Price Monitoring</h3>
                     <p>Time-series monitoring and sentiment analysis to detect volatility and unusual market movement.</p>
-                    <a href="#" class="btn">Explore</a>
+                    <a href="#module-pricing" class="btn">Explore</a>
                 </div>
                 
                 <div class="feature-card">
                     <div class="feature-icon">💱</div>
                     <h3>Trade Management</h3>
                     <p>ACID-compliant trade recording, stored procedures for validation and real-time reporting views.</p>
-                    <a href="#" class="btn">Explore</a>
+                    <a href="#module-trade" class="btn">Explore</a>
                 </div>
                 
                 <div class="feature-card">
                     <div class="feature-icon">🔮</div>
                     <h3>Stock Price Prediction</h3>
                     <p>Database-driven pipelines feeding predictive models (regression, random forest, LSTM) for forecasts.</p>
-                    <a href="#" class="btn">Explore</a>
+                    <a href="#module-prediction" class="btn">Explore</a>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Footer -->
     <footer id="contact">
         <div class="container">
             <div class="footer-content">
@@ -625,6 +646,39 @@
     <script>
         // Initialize charts when the page loads
         document.addEventListener('DOMContentLoaded', function() {
+
+            // NEW CHART: Trade Distribution Chart (for Feature 3 enhancement)
+            const tradeDistributionCtx = document.getElementById('tradeDistributionChart').getContext('2d');
+            const tradeDistributionChart = new Chart(tradeDistributionCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Equities (45%)', 'Bonds (25%)', 'Derivatives (15%)', 'Forex (15%)'],
+                    datasets: [{
+                        label: 'Trade Volume %',
+                        data: [45, 25, 15, 15], // Sample distribution percentages
+                        backgroundColor: [
+                            '#1a3b5d', // Primary
+                            '#2c5aa0', // Secondary
+                            '#4caf50', // Accent
+                            '#ff9800' // Warning
+                        ],
+                        hoverOffset: 10
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'right',
+                        },
+                        title: {
+                            display: false
+                        }
+                    }
+                }
+            });
+
             // Portfolio Performance Chart
             const portfolioCtx = document.getElementById('portfolioChart').getContext('2d');
             const portfolioChart = new Chart(portfolioCtx, {
@@ -769,27 +823,28 @@
                 }
             });
             
-            // Update charts when dropdowns change
+            // Update charts when dropdowns change (Placeholder for actual data fetching)
+            document.getElementById('tradeAssetRange').addEventListener('change', function() {
+                tradeDistributionChart.update();
+            });
+
             document.getElementById('portfolioRange').addEventListener('change', function() {
-                // In a real app, you would fetch new data based on the selected range
                 portfolioChart.update();
             });
             
             document.getElementById('predictionStock').addEventListener('change', function() {
-                // In a real app, you would fetch new data based on the selected stock
                 predictionChart.update();
             });
             
             document.getElementById('fraudRange').addEventListener('change', function() {
-                // In a real app, you would fetch new data based on the selected range
                 fraudChart.update();
             });
             
             document.getElementById('priceStock').addEventListener('change', function() {
-                // In a real app, you would fetch new data based on the selected stock
                 priceChart.update();
             });
         });
     </script>
 </body>
 </html>
+```
